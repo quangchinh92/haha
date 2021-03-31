@@ -12,6 +12,9 @@ public class RoomInsert {
     @NotEmpty(message = "Type is not empty!")
     private String type;
 
+    @NotEmpty(message = "HotelId is not empty!")
+    private String hotelId;
+
     public Room createEntity() {
         Room room = new Room();
         room.setName(name);

@@ -23,6 +23,16 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
+    @GetMapping("/{hotelId}/rooms")
+    public List<Room> getByHotelId(@PathVariable Long hotelId) {
+        return roomService.findByHotelId(hotelId);
+    }
+
+    @GetMapping("/{hotelId}/room/{id}")
+    public Room getByIdAndHotelId(@PathVariable Long id, @PathVariable Long hotelId) {
+        return roomService.findByIdAndHotelId(id, hotelId);
+    }
+
     @GetMapping("/rooms")
     public List<Room> getRoomList() {
         return roomService.getAllRoom();

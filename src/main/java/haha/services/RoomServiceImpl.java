@@ -24,6 +24,16 @@ public class RoomServiceImpl implements RoomService {
         this.roomRepository = roomRepository;
     }
 
+    @Override
+    public Room findByIdAndHotelId(Long id, Long hotelId) {
+        return roomRepository.findByIdAndHotelId(id, hotelId).get();
+    }
+
+    @Override
+    public List<Room> findByHotelId(Long hotelId) {
+        return roomRepository.findByHotelId(hotelId);
+    }
+
     @Cacheable("rooms")
     @Override
     public List<Room> getAllRoom() {
@@ -34,7 +44,9 @@ public class RoomServiceImpl implements RoomService {
     public Room insert(Room newRoom) {
         List<Room> roomList = roomRepository.findAll();
         String newName = newRoom.getName();
-        if (roomList.parallelStream().filter(room -> newName.equals(room.getName())).count() > 0) {
+        Long hotelId = newRoom.getHotelId();
+        if (roomList.parallelStream()
+                .filter(room -> newName.equals(room.getName()) && hotelId.equals(room.getHotelId())).count() > 0) {
             throw new DuplicatedException("Room name: " + newRoom.getName() + " is registed!");
         }
         newRoom = roomRepository.saveAndFlush(newRoom.setNew());
