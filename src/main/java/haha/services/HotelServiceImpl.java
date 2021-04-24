@@ -29,4 +29,9 @@ public class HotelServiceImpl implements HotelService {
         return hotelRepository.findById(id).get();
     }
 
+    @Override
+    public List<Hotel> getAllHotelByDeleted(Integer deleted) {
+        return hotelRepository.findAllByDeleted(deleted);
+    }
+
 }

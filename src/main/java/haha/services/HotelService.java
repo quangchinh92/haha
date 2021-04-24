@@ -8,5 +8,7 @@ public interface HotelService {
 
     List<Hotel> getAllHotel();
 
+    List<Hotel> getAllHotelByDeleted(Integer deleted);
+
     Hotel findById(Long Id);
 }
