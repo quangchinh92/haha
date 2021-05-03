@@ -11,4 +11,6 @@ public interface HotelService {
     List<Hotel> getAllHotelByDeleted(Integer deleted);
 
     Hotel findById(Long Id);
+
+    Hotel save(Hotel hotel);
 }

@@ -1,5 +1,6 @@
 package haha.wrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import haha.wrapper.enums.RESPONSE_STATUS;
@@ -30,6 +31,17 @@ public class ResponseBodyWrapper<T> {
     public static <T> ResponseBodyWrapper<T> createSuccess(List<T> data) {
         return new ResponseBodyWrapper<T>(RESPONSE_STATUS.SUCCESS.getCode(), null,
                 data);
+    }
+
+    /**
+     *
+     * @param data
+     * @return ResponseEntityWrapper
+     */
+    public static <T> ResponseBodyWrapper<T> createSuccess(T data) {
+        List<T> tList = new ArrayList<>();
+        tList.add(data);
+        return new ResponseBodyWrapper<T>(RESPONSE_STATUS.SUCCESS.getCode(), null, tList);
     }
 
     /**

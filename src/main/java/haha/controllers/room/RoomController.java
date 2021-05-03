@@ -1,4 +1,4 @@
-package haha.controllers;
+package haha.controllers.room;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import haha.entities.Room;
 import haha.services.RoomService;
 
-@RestController
+@RestController()
 public class RoomController {
 
     @Autowired

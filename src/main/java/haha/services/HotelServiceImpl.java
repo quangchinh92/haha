@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import haha.entities.Hotel;
@@ -13,11 +14,8 @@ import haha.repositories.HotelRepository;
 @Transactional
 public class HotelServiceImpl implements HotelService {
 
-    private final HotelRepository hotelRepository;
-
-    public HotelServiceImpl(HotelRepository hotelRepository) {
-        this.hotelRepository = hotelRepository;
-    }
+    @Autowired
+    private HotelRepository hotelRepository;
 
     @Override
     public List<Hotel> getAllHotel() {
@@ -32,6 +30,11 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public List<Hotel> getAllHotelByDeleted(Integer deleted) {
         return hotelRepository.findAllByDeleted(deleted);
+    }
+
+    @Override
+    public Hotel save(Hotel hotel) {
+        return hotelRepository.save(hotel);
     }
 
 }

@@ -1,4 +1,4 @@
-package haha.payload;
+package haha.controllers.room;
 
 import javax.validation.constraints.NotEmpty;
 
