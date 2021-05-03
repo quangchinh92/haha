@@ -44,9 +44,10 @@ public class RoomServiceImpl implements RoomService {
     public Room insert(Room newRoom) {
         List<Room> roomList = roomRepository.findAll();
         String newName = newRoom.getName();
-        Long hotelId = newRoom.getHotelId();
+        Long hotelId = newRoom.getHotel().getId();
         if (roomList.parallelStream()
-                .filter(room -> newName.equals(room.getName()) && hotelId.equals(room.getHotelId())).count() > 0) {
+                .filter(room -> newName.equals(room.getName()) && hotelId.equals(room.getHotel().getId()))
+                .count() > 0) {
             throw new DuplicatedException("Room name: " + newRoom.getName() + " is registed!");
         }
         newRoom = roomRepository.saveAndFlush(newRoom.setNew());

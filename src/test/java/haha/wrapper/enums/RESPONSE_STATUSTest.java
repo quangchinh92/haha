@@ -1,6 +1,5 @@
 package haha.wrapper.enums;
 
-
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 

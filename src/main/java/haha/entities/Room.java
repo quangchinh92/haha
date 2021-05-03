@@ -24,11 +24,8 @@ public class Room implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private Long hotelId;
 
     @Column(nullable = false)
     private String name;
@@ -40,7 +37,7 @@ public class Room implements Serializable {
     private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id")
+    @JoinColumn(name = "HOTEL_ID")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Hotel hotel;
