@@ -1,4 +1,4 @@
-package com.chinhtran.oauth2ServerExample;
+package chinhtran.JWTServerApp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
