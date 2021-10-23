@@ -11,41 +11,31 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtils {
 
-    private static String SECRET_KEY = "secretKey";
-
-    public static String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public static String extractUsername(String secretKey, String token) {
+        return extractClaim(secretKey, token, Claims::getSubject);
     }
 
-    public static Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public static Date extractExpiration(String secretKey, String token) {
+        return extractClaim(secretKey, token, Claims::getExpiration);
     }
 
-    public static <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+    public static <T> T extractClaim(String secretKey, String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(secretKey, token);
         return claimsResolver.apply(claims);
     }
 
-    private static Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    private static Claims extractAllClaims(String secretKey, String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
-    private static Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    public static String generateToken(String username) {
+    public static String generateToken(String secretKey, String username) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        return createToken(secretKey, claims, username);
     }
 
-    private static String createToken(Map<String, Object> claims, String subject) {
+    private static String createToken(String secretKey, Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-    }
-
-    public static Boolean validateToken(String token, String username) {
-        return (extractUsername(token).equals(username) && !isTokenExpired(token));
+                .signWith(SignatureAlgorithm.HS256, secretKey).compact();
     }
 }

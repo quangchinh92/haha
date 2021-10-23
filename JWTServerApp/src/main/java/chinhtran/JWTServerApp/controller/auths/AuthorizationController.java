@@ -10,13 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import chinhtran.JWTServerApp.utils.JwtUtils;
+import chinhtran.JWTServerApp.service.JwtService;
 
 @RestController
 public class AuthorizationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
 
     @RequestMapping(value = "/api/authorization", method = RequestMethod.POST)
     public ResponseEntity<AuthorizationResource> createAuthenticationToken(
@@ -29,7 +32,7 @@ public class AuthorizationController {
         }
         AuthorizationResource authorizationResource = new AuthorizationResource();
         authorizationResource.setJwt(
-                JwtUtils.generateToken(authorizationRequest.getUsername()));
+                jwtService.generateToken(authorizationRequest.getUsername()));
         authorizationResource.setUsername(authorizationRequest.getUsername());
         return ResponseEntity.ok(authorizationResource);
     }

@@ -12,6 +12,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Get user by username
+     * 
+     * @param username
+     * @return User
+     */
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
     }

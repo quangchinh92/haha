@@ -1,8 +1,6 @@
 package chinhtran.JWTServerApp.config;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -11,17 +9,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import chinhtran.JWTServerApp.entity.Endpoint;
-import chinhtran.JWTServerApp.utils.JwtUtils;
-import lombok.Getter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import chinhtran.JWTServerApp.exceptions.ApiError;
+import chinhtran.JWTServerApp.exceptions.Error;
+import chinhtran.JWTServerApp.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -32,38 +34,73 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private MyUserDetailsService myUserDetailsService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         final String authorizationHeader = request.getHeader(AUTHORIZATION);
-        String username = "";
-        String jwtToken = "";
-        if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(AUTHORIZATION_TYPE)) {
-            jwtToken = authorizationHeader.substring(AUTHORIZATION_TYPE.length());
-            username = JwtUtils.extractUsername(jwtToken);
+        if (StringUtils.isBlank(authorizationHeader)) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(new ObjectMapper().writeValueAsString(createUnauthorizedApiError()));
+            return;
         }
+        if (!authorizationHeader.startsWith(AUTHORIZATION_TYPE)) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(new ObjectMapper().writeValueAsString(createUnauthorizedApiErrorWrongFormat()));
+            return;
+        }
+        String jwtToken = "";
+        jwtToken = authorizationHeader.substring(AUTHORIZATION_TYPE.length());
+        try {
+            jwtService.extractExpiration(jwtToken);
+        } catch (SignatureException ex) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.getWriter().write(new ObjectMapper().writeValueAsString(createForbiddenApiError()));
+            return;
+        } catch (ExpiredJwtException ex) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(new ObjectMapper().writeValueAsString(createUnauthorizedApiErrorExpired()));
+            return;
+        }
+        String username = "";
+        username = jwtService.extractUsername(jwtToken);
         if (StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.myUserDetailsService.loadUserByUsername(username);
-            if (JwtUtils.validateToken(jwtToken, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
         filterChain.doFilter(request, response);
     }
 
-    public static class MyUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {
+    private ApiError createUnauthorizedApiError() {
+        Error error = new Error();
+        error.setCode(1);
+        error.setMessage("Do not found header '" + AUTHORIZATION + "'.");
+        return new ApiError(HttpStatus.UNAUTHORIZED, error);
+    }
 
-        @Getter
-        private List<Endpoint> endpointList;
+    private ApiError createUnauthorizedApiErrorWrongFormat() {
+        Error error = new Error();
+        error.setCode(2);
+        error.setMessage(AUTHORIZATION + " starts with '" + AUTHORIZATION_TYPE + "'.");
+        return new ApiError(HttpStatus.UNAUTHORIZED, error);
+    }
 
-        public MyUsernamePasswordAuthenticationToken(Object principal, Object credentials,
-                Collection<? extends GrantedAuthority> authorities, List<Endpoint> endpointList) {
-            super(principal, credentials, authorities);
-            this.endpointList = endpointList;
-        }
+    private ApiError createUnauthorizedApiErrorExpired() {
+        Error error = new Error();
+        error.setCode(3);
+        error.setMessage("Token is expired.");
+        return new ApiError(HttpStatus.UNAUTHORIZED, error);
+    }
+
+    private ApiError createForbiddenApiError() {
+        Error error = new Error();
+        error.setCode(1);
+        error.setMessage("Token is wrong.");
+        return new ApiError(HttpStatus.FORBIDDEN, error);
     }
 }
