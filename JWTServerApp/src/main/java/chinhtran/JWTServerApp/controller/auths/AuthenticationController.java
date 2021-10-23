@@ -17,7 +17,7 @@ import chinhtran.JWTServerApp.entity.User.MyGrantedAuthority;
 public class AuthenticationController {
 
     @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('USER')")
-    @RequestMapping(value = "/authentication", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/authentication", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationResource> createAuthenticationToken(
             Authentication authentication,
             @RequestBody AuthenticationRequestBody authenticationRequest) throws Exception {

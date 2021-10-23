@@ -10,14 +10,14 @@ import lombok.Data;
 @Data
 public class ApiError {
     private HttpStatus status;
-    private List<String> errors;
+    private List<Error> errors;
 
-    public ApiError(HttpStatus status, List<String> errors) {
+    public ApiError(HttpStatus status, List<Error> errors) {
         this.status = status;
         this.errors = errors;
     }
 
-    public ApiError(HttpStatus status, String error) {
+    public ApiError(HttpStatus status, Error error) {
         super();
         this.status = status;
         errors = Arrays.asList(error);

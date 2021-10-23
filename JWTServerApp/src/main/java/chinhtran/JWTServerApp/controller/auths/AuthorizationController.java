@@ -18,7 +18,7 @@ public class AuthorizationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @RequestMapping(value = "/authorization", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/authorization", method = RequestMethod.POST)
     public ResponseEntity<AuthorizationResource> createAuthenticationToken(
             @RequestBody AuthorizationRequestBody authorizationRequest) throws Exception {
         try {
@@ -30,6 +30,7 @@ public class AuthorizationController {
         AuthorizationResource authorizationResource = new AuthorizationResource();
         authorizationResource.setJwt(
                 JwtUtils.generateToken(authorizationRequest.getUsername()));
+        authorizationResource.setUsername(authorizationRequest.getUsername());
         return ResponseEntity.ok(authorizationResource);
     }
 }
