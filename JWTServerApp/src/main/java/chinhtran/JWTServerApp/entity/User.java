@@ -1,7 +1,6 @@
 package chinhtran.JWTServerApp.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,9 +16,12 @@ import javax.persistence.ManyToMany;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Entity
@@ -35,11 +37,14 @@ public class User {
     @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private List<Role> roleList;
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public List<MyGrantedAuthority> getAuthorities() {
         List<Role> roles = this.getRoleList();
+        if (CollectionUtils.isEmpty(roles)) {
+            return new ArrayList<>();
+        }
         List<MyGrantedAuthority> authorities = new ArrayList<>();
         for (Role role : roles) {
-            authorities.add(new MyGrantedAuthority(role.getValue(), role.getEndpointList()));
+            authorities.add(new MyGrantedAuthority(role.getValue()));
         }
         return authorities;
     }
@@ -48,15 +53,13 @@ public class User {
 
         private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
+        @JsonProperty("authority")
         private final String role;
 
-        @Getter
-        private final List<Endpoint> endpointList;
-
-        public MyGrantedAuthority(String role, List<Endpoint> endpointList) {
+        @JsonCreator
+        public MyGrantedAuthority(@JsonProperty("authority") String role) {
             Assert.hasText(role, "A granted authority textual representation is required");
             this.role = role;
-            this.endpointList = endpointList;
         }
 
         @Override

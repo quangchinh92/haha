@@ -1,6 +1,6 @@
-package chinhtran.JWTServerApp.controller.auths;
+package chinhtran.JWTServerApp.controller.auths.model;
 
-public class AuthorizationRequestBody {
+public class AuthenticationPostReq {
 
     private String username;
     private String password;

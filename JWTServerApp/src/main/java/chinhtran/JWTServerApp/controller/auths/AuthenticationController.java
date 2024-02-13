@@ -1,39 +1,53 @@
 package chinhtran.JWTServerApp.controller.auths;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import chinhtran.JWTServerApp.entity.User.MyGrantedAuthority;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import chinhtran.JWTServerApp.controller.auths.model.AuthenticationPostReq;
+import chinhtran.JWTServerApp.controller.auths.model.AuthenticationPostRes;
+import chinhtran.JWTServerApp.entity.User;
+import chinhtran.JWTServerApp.service.JwtService;
+import chinhtran.JWTServerApp.service.UserService;
 
 @RestController
 public class AuthenticationController {
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('USER')")
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
+
     @RequestMapping(value = "/api/authentication", method = RequestMethod.POST)
-    public ResponseEntity<AuthenticationResource> createAuthenticationToken(
-            Authentication authentication,
-            @RequestBody AuthenticationRequestBody authenticationRequest) throws Exception {
-        AuthenticationResource authenticationResource = new AuthenticationResource();
-        authenticationResource.setIsValid(false);
-        Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
-        grantedAuthorities.stream().forEach(grantedAuthority -> {
-            if (grantedAuthority instanceof MyGrantedAuthority) {
-                MyGrantedAuthority myGrantedAuthority = (MyGrantedAuthority) grantedAuthority;
-                myGrantedAuthority.getEndpointList().stream().forEach(endpoint -> {
-                    if (endpoint.getValue().equals(authenticationRequest.getEndpoint())) {
-                        authenticationResource.setIsValid(true);
-                    }
-                });
-            }
-        });
-        return ResponseEntity.ok(authenticationResource);
+    public ResponseEntity<AuthenticationPostRes> post(@RequestBody AuthenticationPostReq req) {
+
+        // Check user is exist in DB.
+        User user = userService.getUserByUsernameAndPassword(req.getUsername(), req.getPassword());
+
+        // Create claims
+        Map<String, Object> claims = new HashMap<>();
+        try {
+            claims.put("roles", new ObjectMapper().writeValueAsString(user.getRoleList()));
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        // return response
+        AuthenticationPostRes res = new AuthenticationPostRes();
+        res.setJwt(jwtService.generateTokenWithClaims(user.getUsername(), claims));
+        res.setUsername(user.getUsername());
+        return ResponseEntity.ok(res);
     }
 }

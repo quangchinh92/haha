@@ -1,6 +1,7 @@
 package chinhtran.JWTServerApp.config;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,9 +20,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import chinhtran.JWTServerApp.entity.User.MyGrantedAuthority;
 import chinhtran.JWTServerApp.exceptions.ApiError;
 import chinhtran.JWTServerApp.exceptions.Error;
 import chinhtran.JWTServerApp.service.JwtService;
+import chinhtran.JWTServerApp.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 
@@ -32,7 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final static String AUTHORIZATION_TYPE = "Bearer ";
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private UserDetailsServiceImpl myUserDetailsService;
 
     @Autowired
     private JwtService jwtService;
@@ -41,18 +44,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         final String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (StringUtils.isBlank(authorizationHeader)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write(new ObjectMapper().writeValueAsString(createUnauthorizedApiError()));
+        if (StringUtils.isBlank(authorizationHeader) || !authorizationHeader.startsWith(AUTHORIZATION_TYPE)) {
+            filterChain.doFilter(request, response);
             return;
         }
-        if (!authorizationHeader.startsWith(AUTHORIZATION_TYPE)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write(new ObjectMapper().writeValueAsString(createUnauthorizedApiErrorWrongFormat()));
-            return;
-        }
-        String jwtToken = "";
-        jwtToken = authorizationHeader.substring(AUTHORIZATION_TYPE.length());
+
+        String jwtToken = authorizationHeader.substring(AUTHORIZATION_TYPE.length());
         try {
             jwtService.extractExpiration(jwtToken);
         } catch (SignatureException ex) {
@@ -64,30 +61,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             response.getWriter().write(new ObjectMapper().writeValueAsString(createUnauthorizedApiErrorExpired()));
             return;
         }
-        String username = "";
-        username = jwtService.extractUsername(jwtToken);
+        String username = jwtService.extractUsername(jwtToken);
         if (StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            List<MyGrantedAuthority> authorities = jwtService.getAuthorities(jwtToken);
+
             UserDetails userDetails = this.myUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+                    userDetails, null, authorities);
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
         filterChain.doFilter(request, response);
-    }
-
-    private ApiError createUnauthorizedApiError() {
-        Error error = new Error();
-        error.setCode(1);
-        error.setMessage("Do not found header '" + AUTHORIZATION + "'.");
-        return new ApiError(HttpStatus.UNAUTHORIZED, error);
-    }
-
-    private ApiError createUnauthorizedApiErrorWrongFormat() {
-        Error error = new Error();
-        error.setCode(2);
-        error.setMessage(AUTHORIZATION + " starts with '" + AUTHORIZATION_TYPE + "'.");
-        return new ApiError(HttpStatus.UNAUTHORIZED, error);
     }
 
     private ApiError createUnauthorizedApiErrorExpired() {

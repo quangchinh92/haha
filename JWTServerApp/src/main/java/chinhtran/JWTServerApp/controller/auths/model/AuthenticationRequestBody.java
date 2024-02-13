@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.controller.auths;
+package chinhtran.JWTServerApp.controller.auths.model;
 
 import lombok.Data;
 

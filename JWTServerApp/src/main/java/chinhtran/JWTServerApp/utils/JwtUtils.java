@@ -24,16 +24,16 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    private static Claims extractAllClaims(String secretKey, String token) {
+    public static Claims extractAllClaims(String secretKey, String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
     public static String generateToken(String secretKey, String username) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(secretKey, claims, username);
+        return generateTokenWithClaims(secretKey, claims, username);
     }
 
-    private static String createToken(String secretKey, Map<String, Object> claims, String subject) {
+    public static String generateTokenWithClaims(String secretKey, Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*10))
                 .signWith(SignatureAlgorithm.HS256, secretKey).compact();

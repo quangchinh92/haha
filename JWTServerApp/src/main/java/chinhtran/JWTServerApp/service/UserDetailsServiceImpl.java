@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.config;
+package chinhtran.JWTServerApp.service;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ import chinhtran.JWTServerApp.entity.User;
 import chinhtran.JWTServerApp.repository.UserRepository;
 
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -23,7 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Username " + username + " is not found!");
         }
         return new org.springframework.security.core.userdetails.User(user.get().getUsername(),
-                user.get().getPassword(), user.get().getAuthorities());
+                user.get().getUsername(), user.get().getAuthorities());
     }
 
 }
