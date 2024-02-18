@@ -20,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import chinhtran.JWTServerApp.entity.User.MyGrantedAuthority;
+import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
 import chinhtran.JWTServerApp.exceptions.ApiError;
 import chinhtran.JWTServerApp.exceptions.Error;
 import chinhtran.JWTServerApp.service.JwtService;

@@ -1,6 +1,6 @@
 package chinhtran.JWTServerApp.service;
 
-import chinhtran.JWTServerApp.entity.User;
+import chinhtran.JWTServerApp.entity.UserEntity;
 
 public interface UserService {
 
@@ -10,7 +10,7 @@ public interface UserService {
      * @param username
      * @return User
      */
-    public User getUserByUsername(String username);
+    public UserEntity getUserByUsername(String username);
 
     /**
      * Get user by username
@@ -19,5 +19,5 @@ public interface UserService {
      * @param password
      * @return User
      */
-    public User getUserByUsernameAndPassword(String username, String password);
+    public UserEntity getUserByUsernameAndPassword(String username, String password);
 }

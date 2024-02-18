@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import chinhtran.JWTServerApp.entity.Role;
-import chinhtran.JWTServerApp.entity.User.MyGrantedAuthority;
+import chinhtran.JWTServerApp.entity.RoleEntity;
+import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
 import chinhtran.JWTServerApp.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 
@@ -45,8 +45,8 @@ public class JwtService {
 
     public List<MyGrantedAuthority> getAuthorities(String token) {
         try {
-            List<Role> roleList = new ObjectMapper().readValue(extractClaims(token).get("roles").toString(),
-                    new ObjectMapper().getTypeFactory().constructCollectionType(ArrayList.class, Role.class));
+            List<RoleEntity> roleList = new ObjectMapper().readValue(extractClaims(token).get("roles").toString(),
+                    new ObjectMapper().getTypeFactory().constructCollectionType(ArrayList.class, RoleEntity.class));
             List<MyGrantedAuthority> result = new ArrayList<>();
             roleList.forEach(role -> {
                 result.add(new MyGrantedAuthority("ROLE_" + role.getValue()));

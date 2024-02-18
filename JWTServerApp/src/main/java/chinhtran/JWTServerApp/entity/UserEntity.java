@@ -1,9 +1,9 @@
 package chinhtran.JWTServerApp.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
@@ -25,7 +26,8 @@ import lombok.Data;
 
 @Data
 @Entity
-public class User {
+@Table(name = "user")
+public class UserEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,17 +35,17 @@ public class User {
     private String username;
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private List<Role> roleList;
+    private List<RoleEntity> roleList;
 
     public List<MyGrantedAuthority> getAuthorities() {
-        List<Role> roles = this.getRoleList();
+        List<RoleEntity> roles = this.getRoleList();
         if (CollectionUtils.isEmpty(roles)) {
             return new ArrayList<>();
         }
         List<MyGrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : roles) {
+        for (RoleEntity role : roles) {
             authorities.add(new MyGrantedAuthority(role.getValue()));
         }
         return authorities;

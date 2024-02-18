@@ -1,27 +1,28 @@
 package chinhtran.JWTServerApp.entity;
 
-import java.util.List;
+import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class Role {
+@Table(name = "user_role")
+public class UserRoleEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String value;
-    private String description;
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "ROLE_ID")
-    private List<Authorization> autorizationList;
+    @Column(name = "USER_ID")
+    private Long userId;
+
+    @Column(name = "ROLE_ID")
+    private Long roleId;
 }

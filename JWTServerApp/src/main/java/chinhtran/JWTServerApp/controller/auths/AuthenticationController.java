@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chinhtran.JWTServerApp.controller.auths.model.AuthenticationPostReq;
 import chinhtran.JWTServerApp.controller.auths.model.AuthenticationPostRes;
-import chinhtran.JWTServerApp.entity.User;
+import chinhtran.JWTServerApp.entity.UserEntity;
 import chinhtran.JWTServerApp.service.JwtService;
 import chinhtran.JWTServerApp.service.UserService;
 
@@ -32,7 +32,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationPostRes> post(@RequestBody AuthenticationPostReq req) {
 
         // Check user is exist in DB.
-        User user = userService.getUserByUsernameAndPassword(req.getUsername(), req.getPassword());
+        UserEntity user = userService.getUserByUsernameAndPassword(req.getUsername(), req.getPassword());
 
         // Create claims
         Map<String, Object> claims = new HashMap<>();
