@@ -5,7 +5,7 @@ plugins {
     id "com.github.sherter.google-java-format" version "0.9"
 }
 
-group = 'com.example'
+group = 'chinhtran'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -36,7 +36,7 @@ test {
 
 jar {
     manifest {
-        attributes "Main-Class": "chinhtran.JWTServerApp.Oauth2ServerApp"
+        attributes "Main-Class": "chinhtran.JWTServerApp.JWTServerApp"
     }
 
     from {
