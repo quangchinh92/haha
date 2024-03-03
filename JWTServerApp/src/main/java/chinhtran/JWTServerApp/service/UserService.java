@@ -8,14 +8,6 @@ public interface UserService {
      * Get user by username
      *
      * @param username
-     * @return User
-     */
-    public UserEntity getUserByUsername(String username);
-
-    /**
-     * Get user by username
-     *
-     * @param username
      * @param password
      * @return User
      */
