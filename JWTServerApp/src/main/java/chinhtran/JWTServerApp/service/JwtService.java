@@ -28,7 +28,7 @@ public class JwtService {
      * @return String
      */
     public String extractUsername(String token) {
-        return JwtUtils.extractUsername(secretKey, token);
+        return JwtUtils.extractSubject(secretKey, token);
     }
 
     public String generateToken(String username) {

@@ -11,10 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,7 +21,6 @@ import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
 import chinhtran.JWTServerApp.exceptions.ApiError;
 import chinhtran.JWTServerApp.exceptions.Error;
 import chinhtran.JWTServerApp.service.JwtService;
-import chinhtran.JWTServerApp.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 
@@ -33,9 +29,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final static String AUTHORIZATION = "Authorization";
     private final static String AUTHORIZATION_TYPE = "Bearer ";
-
-    @Autowired
-    private UserDetailsServiceImpl myUserDetailsService;
 
     @Autowired
     private JwtService jwtService;
@@ -66,11 +59,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             List<MyGrantedAuthority> authorities = jwtService.getAuthorities(jwtToken);
 
-            UserDetails userDetails = this.myUserDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, authorities);
-            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            MyAuthenticationToken myAuthenticationToken = new MyAuthenticationToken(username,
+                    authorities);
+            SecurityContextHolder.getContext().setAuthentication(myAuthenticationToken);
         }
         filterChain.doFilter(request, response);
     }
