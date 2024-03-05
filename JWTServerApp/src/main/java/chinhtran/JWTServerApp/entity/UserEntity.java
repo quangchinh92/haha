@@ -34,6 +34,9 @@ public class UserEntity implements Serializable {
     private Long id;
     private String username;
     private String password;
+    private String name;
+    private String email;
+    private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))

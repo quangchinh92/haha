@@ -15,12 +15,31 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AESService aesService;
 
+    /**
+     * Get user by username
+     *
+     * @param username
+     * @return User
+     */
+    @Override
+    public UserEntity getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
     @Override
     public UserEntity getUserByUsernameAndPassword(String username, String password) {
-        // encrypt password
+        // Encrypt password
         String encryptedPassword = aesService.encrypt(password);
         // Get userEntity and return.
         return userRepository.findByUsernameAndPassword(username, encryptedPassword)
                 .orElseThrow(() -> new RuntimeException());
+    }
+
+    @Override
+    public UserEntity insert(UserEntity userEntity) {
+        // Encrypt password
+        userEntity.setPassword(aesService.encrypt(userEntity.getPassword()));
+        // Insert into database
+        return userRepository.save(userEntity);
     }
 }

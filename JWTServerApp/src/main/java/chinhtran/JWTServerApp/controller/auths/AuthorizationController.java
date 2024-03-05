@@ -23,6 +23,7 @@ public class AuthorizationController {
     public AuthorizationController(AuthorizationService authorizationService) {
         this.authorizationService = authorizationService;
     }
+
     @PreAuthorize("hasAuthority('AUTHORIZATION:READ')")
     @RequestMapping(value = "/api/authorization", method = RequestMethod.POST)
     public ResponseEntity<AuthorizationPostRes> post(Authentication authentication,
