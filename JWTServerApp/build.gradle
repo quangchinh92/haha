@@ -28,8 +28,8 @@ dependencies {
     implementation "org.glassfish.jaxb:jaxb-runtime:4.0.1"
     runtimeOnly 'javax.xml.bind:jaxb-api:2.1'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
