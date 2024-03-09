@@ -12,12 +12,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ValidationExceptions extends ResponseEntityExceptionHandler {
+public class ValidationExceptions {
 
-    @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
             HttpHeaders headers,
             HttpStatus status, WebRequest request) {
@@ -32,7 +30,6 @@ public class ValidationExceptions extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, headers, status);
     }
 
-    @Override
     public final ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
         Error error = new Error();

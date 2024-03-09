@@ -1,6 +1,7 @@
 package chinhtran.JWTServerApp.Utils;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;

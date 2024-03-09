@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.2.2'
     id 'io.spring.dependency-management' version '1.1.4'
     id "com.github.sherter.google-java-format" version "0.9"
+    id 'eclipse'
 }
 
 group = 'chinhtran'
@@ -21,6 +22,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:4.0.1"
+    implementation "org.glassfish.jaxb:jaxb-runtime:4.0.1"
+    runtimeOnly 'javax.xml.bind:jaxb-api:2.1'
     runtimeOnly 'com.mysql:mysql-connector-j'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
@@ -37,9 +43,5 @@ test {
 jar {
     manifest {
         attributes "Main-Class": "chinhtran.JWTServerApp.JWTServerApp"
-    }
-
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }

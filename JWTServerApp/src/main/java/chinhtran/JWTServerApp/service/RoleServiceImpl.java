@@ -3,8 +3,6 @@ package chinhtran.JWTServerApp.service;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -18,6 +16,7 @@ import chinhtran.JWTServerApp.entity.UserRoleEntity;
 import chinhtran.JWTServerApp.repository.AuthorizationRepository;
 import chinhtran.JWTServerApp.repository.RoleRepository;
 import chinhtran.JWTServerApp.repository.UserRoleRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 @PreAuthorize("hasRole('ADMIN')")
