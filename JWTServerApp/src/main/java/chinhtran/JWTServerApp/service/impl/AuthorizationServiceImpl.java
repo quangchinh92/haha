@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.service;
+package chinhtran.JWTServerApp.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import chinhtran.JWTServerApp.entity.UserRoleEntity;
 import chinhtran.JWTServerApp.repository.RoleRepository;
 import chinhtran.JWTServerApp.repository.UserRepository;
 import chinhtran.JWTServerApp.repository.UserRoleRepository;
+import chinhtran.JWTServerApp.service.AuthorizationService;
 import chinhtran.JWTServerApp.utils.ListUtil;
 
 @Service

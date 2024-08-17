@@ -3,11 +3,6 @@ package chinhtran.JWTServerApp.config;
 import java.io.IOException;
 import java.util.List;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,11 +13,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
-import chinhtran.JWTServerApp.exceptions.ApiError;
-import chinhtran.JWTServerApp.exceptions.Error;
+import chinhtran.JWTServerApp.exceptions.model.ApiError;
+import chinhtran.JWTServerApp.exceptions.model.Error;
 import chinhtran.JWTServerApp.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -68,14 +67,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private ApiError createUnauthorizedApiErrorExpired() {
         Error error = new Error();
-        error.setCode(3);
+        error.setCode("3");
         error.setMessage("Token is expired.");
         return new ApiError(HttpStatus.UNAUTHORIZED, error);
     }
 
     private ApiError createForbiddenApiError() {
         Error error = new Error();
-        error.setCode(1);
+        error.setCode("1");
         error.setMessage("Token is wrong.");
         return new ApiError(HttpStatus.FORBIDDEN, error);
     }

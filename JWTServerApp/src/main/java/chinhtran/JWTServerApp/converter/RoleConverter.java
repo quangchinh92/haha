@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.util.CollectionUtils;
 
-import chinhtran.JWTServerApp.controller.role.models.AuthorizationModel;
-import chinhtran.JWTServerApp.controller.role.models.RoleGetRes;
-import chinhtran.JWTServerApp.controller.role.models.RolePostReq;
-import chinhtran.JWTServerApp.controller.role.models.RolePostRes;
+import chinhtran.JWTServerApp.controller.role.model.AuthorizationModel;
+import chinhtran.JWTServerApp.controller.role.model.RoleGetRes;
+import chinhtran.JWTServerApp.controller.role.model.RolePostReq;
+import chinhtran.JWTServerApp.controller.role.model.RolePostRes;
 import chinhtran.JWTServerApp.entity.AuthorizationEntity;
 import chinhtran.JWTServerApp.entity.RoleEntity;
 

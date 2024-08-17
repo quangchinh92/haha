@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.service;
+package chinhtran.JWTServerApp.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,15 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import chinhtran.JWTServerApp.controller.role.models.RoleGetRes;
-import chinhtran.JWTServerApp.controller.role.models.RolePostReq;
-import chinhtran.JWTServerApp.controller.role.models.RolePostRes;
+import chinhtran.JWTServerApp.controller.role.model.RoleGetRes;
+import chinhtran.JWTServerApp.controller.role.model.RolePostReq;
+import chinhtran.JWTServerApp.controller.role.model.RolePostRes;
 import chinhtran.JWTServerApp.converter.RoleConverter;
 import chinhtran.JWTServerApp.entity.RoleEntity;
 import chinhtran.JWTServerApp.entity.UserRoleEntity;
 import chinhtran.JWTServerApp.repository.AuthorizationRepository;
 import chinhtran.JWTServerApp.repository.RoleRepository;
 import chinhtran.JWTServerApp.repository.UserRoleRepository;
+import chinhtran.JWTServerApp.service.RoleService;
 import jakarta.transaction.Transactional;
 
 @Service

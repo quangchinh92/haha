@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.service;
+package chinhtran.JWTServerApp.service.impl;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -6,6 +6,7 @@ import javax.crypto.spec.IvParameterSpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import chinhtran.JWTServerApp.service.AESService;
 import chinhtran.JWTServerApp.utils.AESUtil;
 
 @Service

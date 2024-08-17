@@ -1,9 +1,9 @@
-package chinhtran.JWTServerApp.exceptions;
+package chinhtran.JWTServerApp.exceptions.model;
 
 import lombok.Data;
 
 @Data
 public class Error {
-    private int code;
+    private String code;
     private String message;
 }

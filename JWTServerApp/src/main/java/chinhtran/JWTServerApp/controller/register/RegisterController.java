@@ -10,43 +10,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import chinhtran.JWTServerApp.consts.CLAIMS;
 import chinhtran.JWTServerApp.controller.register.model.RegisterPostReq;
 import chinhtran.JWTServerApp.controller.register.model.RegisterPostRes;
 import chinhtran.JWTServerApp.entity.UserEntity;
-import chinhtran.JWTServerApp.service.JwtService;
 import chinhtran.JWTServerApp.service.RegisterService;
+import chinhtran.JWTServerApp.service.impl.JwtServiceImpl;
+import chinhtran.JWTServerApp.utils.JsonUtils;
 
 @RestController
-@RequestMapping(value = "/api/register")
+@RequestMapping(value = "/api/users")
 public class RegisterController {
 
     @Autowired
     private RegisterService registerService;
 
     @Autowired
-    private JwtService jwtService;
+    private JwtServiceImpl jwtService;
 
     @PostMapping
     public ResponseEntity<RegisterPostRes> post(@RequestBody RegisterPostReq req) throws Exception {
 
-        UserEntity userEntity = registerService.regist(req);
+        UserEntity userEntity = registerService.register(req);
 
         // Create claims
         Map<String, Object> claims = new HashMap<>();
-        try {
-            claims.put("roles", new ObjectMapper().writeValueAsString(userEntity.getRoleList()));
-        } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        claims.put(CLAIMS.ROLES.getValue(), JsonUtils.writeValueAsString(userEntity.getRoleList()));
 
         // return response
-        RegisterPostRes res = new RegisterPostRes();
-        res.setJwt(jwtService.generateTokenWithClaims(userEntity.getUsername(), claims));
-        res.setUsername(userEntity.getUsername());
-        return ResponseEntity.ok(res);
+        return ResponseEntity
+                .ok(RegisterPostRes.builder()
+                        .jwt(jwtService.generateTokenWithClaims(userEntity.getUsername(), claims))
+                        .username(userEntity.getUsername())
+                        .build());
     }
 }

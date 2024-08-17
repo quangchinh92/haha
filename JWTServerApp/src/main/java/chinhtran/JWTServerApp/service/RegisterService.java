@@ -4,5 +4,5 @@ import chinhtran.JWTServerApp.controller.register.model.RegisterPostReq;
 import chinhtran.JWTServerApp.entity.UserEntity;
 
 public interface RegisterService {
-    public UserEntity regist(RegisterPostReq registerPostReq);
+    public UserEntity register(RegisterPostReq registerPostReq);
 }

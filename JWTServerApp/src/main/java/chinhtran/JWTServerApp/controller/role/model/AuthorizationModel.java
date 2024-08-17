@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.controller.role.models;
+package chinhtran.JWTServerApp.controller.role.model;
 
 import lombok.Data;
 

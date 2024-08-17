@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import chinhtran.JWTServerApp.controller.role.models.RoleGetRes;
-import chinhtran.JWTServerApp.controller.role.models.RolePostReq;
-import chinhtran.JWTServerApp.controller.role.models.RolePostRes;
+import chinhtran.JWTServerApp.controller.role.model.RoleGetRes;
+import chinhtran.JWTServerApp.controller.role.model.RolePostReq;
+import chinhtran.JWTServerApp.controller.role.model.RolePostRes;
 import chinhtran.JWTServerApp.service.RoleService;
 
 @RestController
-@RequestMapping("/api/role")
+@RequestMapping("/api/roles")
 @PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 

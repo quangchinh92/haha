@@ -2,9 +2,9 @@ package chinhtran.JWTServerApp.service;
 
 import java.util.List;
 
-import chinhtran.JWTServerApp.controller.role.models.RoleGetRes;
-import chinhtran.JWTServerApp.controller.role.models.RolePostReq;
-import chinhtran.JWTServerApp.controller.role.models.RolePostRes;
+import chinhtran.JWTServerApp.controller.role.model.RoleGetRes;
+import chinhtran.JWTServerApp.controller.role.model.RolePostReq;
+import chinhtran.JWTServerApp.controller.role.model.RolePostRes;
 
 public interface RoleService {
 

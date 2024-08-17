@@ -1,4 +1,4 @@
-package chinhtran.JWTServerApp.exceptions;
+package chinhtran.JWTServerApp.exceptions.model;
 
 import java.util.Arrays;
 import java.util.List;
