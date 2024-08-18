@@ -1,5 +1,6 @@
 package chinhtran.JWTServerApp.service.impl;
 
+import chinhtran.JWTServerApp.consts.Message;
 import chinhtran.JWTServerApp.controller.auths.model.AuthorizationPostReq;
 import chinhtran.JWTServerApp.controller.auths.model.AuthorizationPostRes;
 import chinhtran.JWTServerApp.converter.AuthorizationConverter;
@@ -13,11 +14,13 @@ import chinhtran.JWTServerApp.service.AuthorizationService;
 import chinhtran.JWTServerApp.utils.ListUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,15 +30,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
   private final UserRoleRepository userRoleRepository;
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
+  private final MessageSource messageSource;
 
   @Autowired
   public AuthorizationServiceImpl(
       UserRoleRepository userRoleRepository,
       UserRepository userRepository,
-      RoleRepository roleRepository) {
+      RoleRepository roleRepository,
+      MessageSource messageSource) {
     this.userRoleRepository = userRoleRepository;
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
+    this.messageSource = messageSource;
   }
 
   @Override
@@ -50,21 +56,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
           roleIdSet.add(userRoleEntity.getRoleId());
         });
     // Check exist for userId.
-    List<UserEntity> userEntityList =
-        userRepository.findByIdInOrderById(new ArrayList<>(userIdSet));
     List<Long> userIdList =
-        userEntityList.stream().map(UserEntity::getId).collect(Collectors.toList());
-    List<String> messageError = validateUserId(userIdSet, userIdList);
-    if (!CollectionUtils.isEmpty(messageError)) {
-      throw new RuntimeException(StringUtils.join(messageError));
-    }
+        userRepository.findByIdInOrderById(new ArrayList<>(userIdSet)).stream()
+            .map(UserEntity::getId)
+            .collect(Collectors.toList());
+    List<String> messageError = validateExistUserId(userIdSet, userIdList);
 
     // Check exist for roleId.
-    List<RoleEntity> roleEntityList =
-        roleRepository.findByIdInOrderById(new ArrayList<>(roleIdSet));
     List<Long> roleIdList =
-        roleEntityList.stream().map(RoleEntity::getId).collect(Collectors.toList());
-    messageError = validateRoleId(roleIdSet, roleIdList);
+        roleRepository.findByIdInOrderById(new ArrayList<>(roleIdSet)).stream()
+            .map(RoleEntity::getId)
+            .collect(Collectors.toList());
+    messageError = validateExistRoleId(roleIdSet, roleIdList);
     if (!CollectionUtils.isEmpty(messageError)) {
       throw new RuntimeException(StringUtils.join(messageError));
     }
@@ -73,15 +76,35 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     return AuthorizationConverter.convertEntityListToAuthorizationPostRes(userRoleEntityList);
   }
 
-  private List<String> validateUserId(final Set<Long> userIdSet, List<Long> userIdList) {
-    return ListUtil.getInexistList(userIdSet, userIdList).stream()
-        .map(userId -> "UserId: " + userId + " Is not exist.")
+  /**
+   * Validate existence of source at the destination.
+   *
+   * @param source Set<Long>
+   * @param destination List<Long>
+   * @return error message list.
+   */
+  private List<String> validateExistUserId(final Set<Long> source, List<Long> destination) {
+    return ListUtil.getInexistList(source, destination).stream()
+        .map(
+            userId ->
+                messageSource.getMessage(
+                    Message.USER_ERR_001, new String[] {String.valueOf(userId)}, Locale.ENGLISH))
         .collect(Collectors.toList());
   }
 
-  private List<String> validateRoleId(final Set<Long> roleIdSet, List<Long> roleIdList) {
-    return ListUtil.getInexistList(roleIdSet, roleIdList).stream()
-        .map(userId -> "RoleId: " + userId + " Is not exist.")
+  /**
+   * Validate existence of source at the destination.
+   *
+   * @param source Set<Long>
+   * @param destination List<Long>
+   * @return error message list.
+   */
+  private List<String> validateExistRoleId(final Set<Long> source, List<Long> destination) {
+    return ListUtil.getInexistList(source, destination).stream()
+        .map(
+            roleId ->
+                messageSource.getMessage(
+                    Message.ROLE_ERR_001, new String[] {String.valueOf(roleId)}, Locale.ENGLISH))
         .collect(Collectors.toList());
   }
 }

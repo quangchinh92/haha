@@ -1,5 +1,6 @@
 package chinhtran.JWTServerApp.config;
 
+import chinhtran.JWTServerApp.consts.Message;
 import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
 import chinhtran.JWTServerApp.exceptions.model.ApiError;
 import chinhtran.JWTServerApp.exceptions.model.Error;
@@ -13,8 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -27,6 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   private static final String AUTHORIZATION_TYPE = "Bearer ";
 
   @Autowired private JwtService jwtService;
+  @Autowired private MessageSource messageSource;
 
   @Override
   protected void doFilterInternal(
@@ -68,11 +72,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
   private ApiError createUnauthorizedApiErrorExpired() {
     return new ApiError(
-        HttpStatus.UNAUTHORIZED, Error.builder().code("3").message("Token is expired.").build());
+        Error.builder()
+            .code(Message.AUTH_ERR_002)
+            .message(messageSource.getMessage(Message.AUTH_ERR_002, null, Locale.ENGLISH))
+            .build());
   }
 
   private ApiError createForbiddenApiError() {
     return new ApiError(
-        HttpStatus.FORBIDDEN, Error.builder().code("1").message("Token is wrong.").build());
+        Error.builder()
+            .code(Message.AUTH_ERR_003)
+            .message(messageSource.getMessage(Message.AUTH_ERR_003, null, Locale.ENGLISH))
+            .build());
   }
 }

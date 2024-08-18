@@ -1,8 +1,10 @@
 package chinhtran.JWTServerApp.service.impl;
 
+import chinhtran.JWTServerApp.consts.Message;
 import chinhtran.JWTServerApp.controller.register.model.RegisterPostReq;
 import chinhtran.JWTServerApp.converter.RegisterConverter;
 import chinhtran.JWTServerApp.entity.UserEntity;
+import chinhtran.JWTServerApp.exceptions.BusinessException;
 import chinhtran.JWTServerApp.repository.UserRepository;
 import chinhtran.JWTServerApp.service.AESService;
 import chinhtran.JWTServerApp.service.RegisterService;
@@ -24,7 +26,7 @@ public class RegisterServiceImpl implements RegisterService {
     // Check userName is exist.
     userRepository
         .findByUsername(userEntity.getUsername())
-        .orElseThrow(() -> new RuntimeException("Username is used!"));
+        .orElseThrow(() -> new BusinessException(Message.USER_ERR_002));
 
     // Encrypt password
     userEntity.setPassword(aesService.encrypt(userEntity.getPassword()));
