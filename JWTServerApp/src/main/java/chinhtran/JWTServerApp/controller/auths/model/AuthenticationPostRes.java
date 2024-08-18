@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class AuthenticationPostRes {
-    private String username;
-    private String jwt;
+  private String username;
+  private String jwt;
 }

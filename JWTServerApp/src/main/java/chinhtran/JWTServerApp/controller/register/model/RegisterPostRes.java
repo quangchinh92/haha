@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class RegisterPostRes {
-    private String username;
-    private String jwt;
+  private String username;
+  private String jwt;
 }

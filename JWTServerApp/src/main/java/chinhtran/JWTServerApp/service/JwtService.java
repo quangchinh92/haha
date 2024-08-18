@@ -1,24 +1,23 @@
 package chinhtran.JWTServerApp.service;
 
+import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
 import java.util.List;
 import java.util.Map;
 
-import chinhtran.JWTServerApp.entity.UserEntity.MyGrantedAuthority;
-
 public interface JwtService {
-    /**
-     * Extract username from token
-     *
-     * @param token
-     * @return String
-     */
-    public String extractUsername(String token);
+  /**
+   * Extract username from token
+   *
+   * @param token
+   * @return String
+   */
+  public String extractUsername(String token);
 
-    public String generateToken(String username);
+  public String generateToken(String username);
 
-    public void extractExpiration(String token);
+  public void extractExpiration(String token);
 
-    public String generateTokenWithClaims(String username, Map<String, Object> claims);
+  public String generateTokenWithClaims(String username, Map<String, Object> claims);
 
-    public List<MyGrantedAuthority> getAuthorities(String token);
+  public List<MyGrantedAuthority> getAuthorities(String token);
 }

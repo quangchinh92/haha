@@ -5,5 +5,5 @@ import chinhtran.JWTServerApp.controller.auths.model.AuthorizationPostRes;
 
 public interface AuthorizationService {
 
-    public AuthorizationPostRes authrorize(AuthorizationPostReq req);
+  public AuthorizationPostRes authrorize(AuthorizationPostReq req);
 }

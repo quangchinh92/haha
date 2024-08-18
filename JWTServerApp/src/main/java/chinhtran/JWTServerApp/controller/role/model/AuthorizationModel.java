@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class AuthorizationModel {
-    private Long id;
-    private String value;
+  private Long id;
+  private String value;
 }

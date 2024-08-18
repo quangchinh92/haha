@@ -1,7 +1,6 @@
 package chinhtran.JWTServerApp.entity;
 
-import java.io.Serializable;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,9 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.io.Serializable;
 import lombok.Data;
 
 @Data
@@ -19,16 +16,16 @@ import lombok.Data;
 @Table(name = "authorization")
 public class AuthorizationEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String value;
+  private String value;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "ROLE_ID")
-    private RoleEntity role;
+  @JsonIgnore
+  @ManyToOne
+  @JoinColumn(name = "ROLE_ID")
+  private RoleEntity role;
 }
