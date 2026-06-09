@@ -1,15 +1,18 @@
 package chinhtran.JWTServerApp.utils;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -19,15 +22,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class AESUtil {
 
-  private static String AES_ALGORITHM = "AES";
+  private static final String AES_ALGORITHM = "AES";
 
-  private static String AES_CBC_ALGORITHM = "AES/CBC/PKCS5Padding";
+  private static final String AES_CBC_ALGORITHM = "AES/CBC/PKCS5Padding";
 
-  private static String PBKDF2_SHA256 = "PBKDF2WithHmacSHA256";
+  private static final String PBKDF2_SHA256 = "PBKDF2WithHmacSHA256";
 
-  private static int ITERATION_COUNT = 65536;
+  private static final int ITERATION_COUNT = 65536;
 
-  private static int KEY_LENGTH = 256;
+  private static final int KEY_LENGTH = 256;
 
   /**
    * Encrypt.
@@ -42,8 +45,7 @@ public class AESUtil {
     try {
       Cipher cipher = Cipher.getInstance(AES_CBC_ALGORITHM);
       cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-      byte[] cipherText;
-      cipherText = cipher.doFinal(input.getBytes());
+      byte[] cipherText = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
       return Base64.getEncoder().encodeToString(cipherText);
     } catch (NoSuchAlgorithmException
         | NoSuchPaddingException
@@ -68,7 +70,7 @@ public class AESUtil {
       Cipher cipher = Cipher.getInstance(AES_CBC_ALGORITHM);
       cipher.init(Cipher.DECRYPT_MODE, key, iv);
       byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(cipherText));
-      return new String(plainText);
+      return new String(plainText, StandardCharsets.UTF_8);
     } catch (NoSuchAlgorithmException
         | NoSuchPaddingException
         | InvalidKeyException
@@ -83,7 +85,11 @@ public class AESUtil {
     try {
       SecretKeyFactory factory = SecretKeyFactory.getInstance(PBKDF2_SHA256);
       KeySpec spec =
-          new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATION_COUNT, KEY_LENGTH);
+          new PBEKeySpec(
+              password.toCharArray(),
+              salt.getBytes(StandardCharsets.UTF_8),
+              ITERATION_COUNT,
+              KEY_LENGTH);
       SecretKey secret =
           new SecretKeySpec(factory.generateSecret(spec).getEncoded(), AES_ALGORITHM);
       return secret;
@@ -96,5 +102,26 @@ public class AESUtil {
   public static IvParameterSpec getIvFromString(String ivString) {
     byte[] iv = ivString.getBytes(Charset.forName("UTF-8"));
     return new IvParameterSpec(iv);
+  }
+
+  /**
+   * Generates a cryptographically secure random AES key.
+   *
+   * @param keySize The size of the key in bits (128, 192, or 256).
+   * @return A secure SecretKey object.
+   * @throws NoSuchAlgorithmException If AES algorithm is not available.
+   */
+  public static SecretKey generateAesKey(int keySize) throws NoSuchAlgorithmException {
+    // Instantiate a KeyGenerator specifically for the AES algorithm
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+
+    // Use a cryptographically strong pseudo-random number generator (PRNG)
+    SecureRandom secureRandom = SecureRandom.getInstanceStrong();
+
+    // Initialize the generator with the specified bit size and randomness source
+    keyGenerator.init(keySize, secureRandom);
+
+    // Generate the final secret key
+    return keyGenerator.generateKey();
   }
 }

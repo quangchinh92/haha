@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Authenticate api. */
 @RestController
 @RequestMapping("/api/authentication")
 public class AuthenticationController {
 
-  @Autowired private AuthenticationService suthenticationService;
+  @Autowired private AuthenticationService authenticationService;
 
   @PostMapping
   public ResponseEntity<AuthenticationPostRes> post(@RequestBody AuthenticationPostReq req) {
-    return ResponseEntity.ok(suthenticationService.authenticate(req));
+    return ResponseEntity.ok(authenticationService.authenticate(req));
   }
 }

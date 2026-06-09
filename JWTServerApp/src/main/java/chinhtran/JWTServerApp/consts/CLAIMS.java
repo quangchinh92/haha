@@ -3,7 +3,8 @@ package chinhtran.JWTServerApp.consts;
 import lombok.Getter;
 
 public enum CLAIMS {
-  ROLES("roles");
+  USER_ID("userId"),
+  UPDATED_PASSWORD_DATE("updatedPasswordDate");
 
   @Getter private String value;
 

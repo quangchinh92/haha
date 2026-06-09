@@ -2,7 +2,7 @@ package chinhtran.JWTServerApp.service;
 
 import java.util.Map;
 
-public interface JwtService {
+public interface AppJwtService {
   /**
    * Extract username from token
    *
@@ -24,6 +24,4 @@ public interface JwtService {
   public void extractExpiration(String token);
 
   public String generateTokenWithClaims(String username, Map<String, Object> claims);
-
-  public Map<String, Object> getClaims(String token);
 }

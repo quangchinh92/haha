@@ -1,11 +1,11 @@
 package chinhtran.JWTServerApp.converter;
 
-import chinhtran.JWTServerApp.controller.register.model.RegisterPostReq;
-import chinhtran.JWTServerApp.entity.UserEntity;
+import chinhtran.JWTServerApp.controller.user.model.UserPostReq;
+import chinhtran.JWTServerApp.repository.entity.UserEntity;
 
 public class RegisterConverter {
 
-  public static UserEntity convertRegisterPostReqToUserEntity(RegisterPostReq req) {
+  public static UserEntity convertPostReqModelToUserEntity(UserPostReq req) {
     UserEntity result = new UserEntity();
     result.setUsername(req.getUsername());
     result.setPassword(req.getPassword());

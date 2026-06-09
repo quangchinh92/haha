@@ -4,13 +4,12 @@ import chinhtran.JWTServerApp.consts.CLAIMS;
 import chinhtran.JWTServerApp.consts.Message;
 import chinhtran.JWTServerApp.controller.auths.model.AuthenticationPostReq;
 import chinhtran.JWTServerApp.controller.auths.model.AuthenticationPostRes;
-import chinhtran.JWTServerApp.entity.UserEntity;
 import chinhtran.JWTServerApp.exceptions.AuthenticationException;
 import chinhtran.JWTServerApp.repository.UserRepository;
+import chinhtran.JWTServerApp.repository.entity.UserEntity;
 import chinhtran.JWTServerApp.service.AESService;
 import chinhtran.JWTServerApp.service.AuthenticationService;
 import chinhtran.JWTServerApp.service.JwtService;
-import chinhtran.JWTServerApp.utils.JsonUtils;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     // Create claims
     Map<String, Object> claims = new HashMap<>();
-    claims.put(CLAIMS.ROLES.getValue(), JsonUtils.writeValueAsString(user.getRoleList()));
+    claims.put(CLAIMS.USER_ID.getValue(), user.getId());
+    claims.put(CLAIMS.UPDATED_PASSWORD_DATE.getValue(), user.getUpdatedPasswordDate());
 
     // return response
     return AuthenticationPostRes.builder()

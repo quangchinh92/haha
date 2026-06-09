@@ -1,16 +1,16 @@
 package chinhtran.JWTServerApp.exceptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
 
 public abstract class AbstractException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  @Getter @Setter private String code;
+  @Getter private String code;
 
-  @Getter @Setter private List<String> args;
+  private List<String> args;
 
   public AbstractException(String code) {
     this.code = code;
@@ -18,6 +18,15 @@ public abstract class AbstractException extends RuntimeException {
 
   public AbstractException(String code, List<String> args) {
     this.code = code;
-    this.args = args;
+    this.args = new ArrayList<>(args);
+  }
+
+  /**
+   * getArgs
+   *
+   * @return List<String>
+   */
+  public List<String> getArgs() {
+    return new ArrayList<>(this.args);
   }
 }
