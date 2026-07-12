@@ -2,6 +2,7 @@ package chinhtran.JWTServerApp.service.impl;
 
 import chinhtran.JWTServerApp.cache.UserCache;
 import chinhtran.JWTServerApp.cache.models.UserCacheData;
+import chinhtran.JWTServerApp.cache.models.UserEvent;
 import chinhtran.JWTServerApp.consts.CLAIMS;
 import chinhtran.JWTServerApp.consts.Message;
 import chinhtran.JWTServerApp.consts.USER_TYPE;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +34,8 @@ public class UserServiceImpl implements UserService {
   private final AESService aesService;
   private final JwtService jwtService;
   @Autowired private UserCache userCache;
+
+  @Autowired private ApplicationEventPublisher applicationEventPublisher;
 
   @Autowired
   public UserServiceImpl(
@@ -63,7 +67,9 @@ public class UserServiceImpl implements UserService {
     userEntity = userRepository.save(userEntity);
 
     // Put to redis
-    userCache.put(UserConverter.convertEntityToCacheData(userEntity));
+    UserEvent userEvent =
+        new UserEvent(UserConverter.convertEntityToCacheData(userEntity), "WRITE");
+    applicationEventPublisher.publishEvent(userEvent);
 
     // Create claims
     Map<String, Object> claims = new HashMap<>();
