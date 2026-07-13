@@ -24,6 +24,7 @@ public class UserConverter {
     data.setEmail(userEntity.getEmail());
     data.setType(userEntity.getType());
     data.setPhoneNumber(userEntity.getPhoneNumber());
+    data.setUpdatedDate(userEntity.getUpdatedDate());
     data.setUpdatedPasswordDate(userEntity.getUpdatedPasswordDate());
 
     return data;

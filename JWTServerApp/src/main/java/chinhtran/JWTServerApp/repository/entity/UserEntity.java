@@ -46,22 +46,13 @@ public class UserEntity implements Serializable {
   @Column(name = "TYPE")
   private Integer type;
 
-  @Column(
-      name = "UPDATED_PASSWORD_DATE",
-      insertable = false,
-      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Column(name = "UPDATED_PASSWORD_DATE")
   private Date updatedPasswordDate;
 
-  @Column(
-      name = "UPDATED_DATE",
-      insertable = false,
-      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Column(name = "UPDATED_DATE")
   private Date updatedDate;
 
-  @Column(
-      name = "CREATED_DATE",
-      insertable = false,
-      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Column(name = "CREATED_DATE")
   private Date createdDate;
 
   public Date getUpdatedPasswordDate() {

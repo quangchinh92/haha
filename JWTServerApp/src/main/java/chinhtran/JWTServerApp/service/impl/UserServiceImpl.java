@@ -19,6 +19,8 @@ import chinhtran.JWTServerApp.repository.entity.UserEntity;
 import chinhtran.JWTServerApp.service.AESService;
 import chinhtran.JWTServerApp.service.JwtService;
 import chinhtran.JWTServerApp.service.UserService;
+import jakarta.transaction.Transactional;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public UserPostRes create(UserPostReq model) {
 
     // Convert request model to user entity.
@@ -64,6 +67,10 @@ public class UserServiceImpl implements UserService {
     // Nomally User
     userEntity.setType(USER_TYPE.USER.getValue());
 
+    Date now = new Date();
+    userEntity.setCreatedDate(now);
+    userEntity.setUpdatedDate(now);
+    userEntity.setUpdatedPasswordDate(now);
     userEntity = userRepository.save(userEntity);
 
     // Put to redis
@@ -83,13 +90,25 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public void update(Long id, UserPutReq model) {
-    UserEntity userEntity = UserConverter.convertPutReqModelToUserEntity(model);
-    userEntity.setId(id);
-    userRepository.save(userEntity);
+
+    Date now = new Date();
+    userRepository.update(id, model.getName(), model.getEmail(), model.getPhoneNumber(), now);
+
+    // Put to redis
+    UserCacheData cacheData = new UserCacheData();
+    cacheData.setId(id);
+    cacheData.setName(model.getName());
+    cacheData.setEmail(model.getEmail());
+    cacheData.setPhoneNumber(model.getPhoneNumber());
+    cacheData.setUpdatedDate(now);
+    UserEvent userEvent = new UserEvent(cacheData, "WRITE");
+    applicationEventPublisher.publishEvent(userEvent);
   }
 
   @Override
+  @Transactional
   public void changePass(Long id, ChangePassReq req) {
     if (req.getNewPassword().length() < 8 && req.getNewPassword().length() > 20) {
       throw new BusinessException("PASSWORD");

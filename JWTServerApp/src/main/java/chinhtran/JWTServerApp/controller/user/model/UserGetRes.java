@@ -19,6 +19,8 @@ public class UserGetRes {
 
   private Date updatedPasswordDate;
 
+  private Date updatedDate;
+
   public Date getUpdatedPasswordDate() {
     return Objects.isNull(updatedPasswordDate) ? null : (Date) updatedPasswordDate.clone();
   }
@@ -26,5 +28,13 @@ public class UserGetRes {
   public void setUpdatedPasswordDate(Date updatedPasswordDate) {
     this.updatedPasswordDate =
         Objects.isNull(updatedPasswordDate) ? null : (Date) updatedPasswordDate.clone();
+  }
+
+  public Date getUpdatedDate() {
+    return Objects.isNull(updatedDate) ? null : (Date) updatedDate.clone();
+  }
+
+  public void setUpdatedDate(Date updatedDate) {
+    this.updatedDate = Objects.isNull(updatedDate) ? null : (Date) updatedDate.clone();
   }
 }

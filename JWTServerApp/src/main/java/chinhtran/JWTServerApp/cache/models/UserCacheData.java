@@ -25,6 +25,8 @@ public class UserCacheData implements Serializable {
 
   private Date updatedPasswordDate;
 
+  private Date updatedDate;
+
   public Date getUpdatedPasswordDate() {
     return Objects.isNull(updatedPasswordDate) ? null : (Date) updatedPasswordDate.clone();
   }
@@ -34,9 +36,11 @@ public class UserCacheData implements Serializable {
         Objects.isNull(updatedPasswordDate) ? null : (Date) updatedPasswordDate.clone();
   }
 
-  public UserCacheData updatedPasswordDate(Date updatedPasswordDate) {
-    this.updatedPasswordDate =
-        Objects.isNull(updatedPasswordDate) ? null : (Date) updatedPasswordDate.clone();
-    return this;
+  public Date getUpdatedDate() {
+    return Objects.isNull(updatedDate) ? null : (Date) updatedDate.clone();
+  }
+
+  public void setUpdatedDate(Date updatedDate) {
+    this.updatedDate = Objects.isNull(updatedDate) ? null : (Date) updatedDate.clone();
   }
 }
