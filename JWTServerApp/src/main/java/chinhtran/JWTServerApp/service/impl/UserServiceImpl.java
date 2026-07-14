@@ -19,7 +19,6 @@ import chinhtran.JWTServerApp.repository.entity.UserEntity;
 import chinhtran.JWTServerApp.service.AESService;
 import chinhtran.JWTServerApp.service.JwtService;
 import chinhtran.JWTServerApp.service.UserService;
-import jakarta.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +27,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -92,6 +92,16 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public void update(Long id, UserPutReq model) {
+
+    if (!Objects.isNull(model.getLastUpdatedDate())) {
+      throw new BusinessException(Message.USER_ERR_002);
+    }
+
+    UserGetRes userGetRes = getById(id);
+
+    if (!model.getLastUpdatedDate().equals(userGetRes.getUpdatedDate())) {
+      throw new BusinessException(Message.USER_ERR_002);
+    }
 
     Date now = new Date();
     userRepository.update(id, model.getName(), model.getEmail(), model.getPhoneNumber(), now);
