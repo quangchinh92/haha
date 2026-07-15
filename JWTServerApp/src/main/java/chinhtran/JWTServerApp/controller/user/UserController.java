@@ -6,6 +6,7 @@ import chinhtran.JWTServerApp.controller.user.model.UserPostReq;
 import chinhtran.JWTServerApp.controller.user.model.UserPostRes;
 import chinhtran.JWTServerApp.controller.user.model.UserPutReq;
 import chinhtran.JWTServerApp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +24,7 @@ public class UserController {
   @Autowired private UserService userService;
 
   @PostMapping
-  public ResponseEntity<UserPostRes> post(@RequestBody UserPostReq req) {
+  public ResponseEntity<UserPostRes> post(@RequestBody @Valid UserPostReq req) {
     // return response
     return ResponseEntity.ok(userService.create(req));
   }

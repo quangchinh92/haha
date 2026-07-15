@@ -6,15 +6,13 @@ import chinhtran.JWTServerApp.exceptions.AuthenticationException;
 import chinhtran.JWTServerApp.exceptions.BusinessException;
 import chinhtran.JWTServerApp.exceptions.model.ApiError;
 import chinhtran.JWTServerApp.exceptions.model.Error;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,37 +22,6 @@ import org.springframework.web.context.request.WebRequest;
 public class ControllerAdviceCustom {
 
   @Autowired private MessageSource messageSource;
-
-  public ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException ex,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request) {
-    List<Error> errors =
-        ex.getBindingResult().getFieldErrors().stream()
-            .map(
-                error ->
-                    Error.builder()
-                        .code(Message.BAD_REQ_ERR_002)
-                        .message(error.getField() + " " + error.getDefaultMessage())
-                        .build())
-            .collect(Collectors.toList());
-    return new ResponseEntity<>(new ApiError(errors), headers, status);
-  }
-
-  public final ResponseEntity<Object> handleHttpMessageNotReadable(
-      HttpMessageNotReadableException ex,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request) {
-    ApiError apiError =
-        new ApiError(
-            Error.builder()
-                .code(Message.BAD_REQ_ERR_001)
-                .message(getMessage(Message.BAD_REQ_ERR_001, null))
-                .build());
-    return new ResponseEntity<>(apiError, headers, status);
-  }
 
   @ExceptionHandler(value = {Exception.class})
   protected ResponseEntity<ApiError> handleConflict(Exception ex, WebRequest request) {
@@ -111,5 +78,21 @@ public class ControllerAdviceCustom {
    */
   private String getMessage(String code, List<String> args) {
     return messageSource.getMessage(code, args != null ? args.toArray() : null, Locale.ENGLISH);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ApiError> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    List<Error> errors = new ArrayList<>();
+    ex.getBindingResult()
+        .getFieldErrors()
+        .forEach(
+            error ->
+                errors.add(
+                    Error.builder()
+                        .code(error.getField())
+                        .message(error.getDefaultMessage())
+                        .build()));
+
+    return new ResponseEntity<>(new ApiError(errors), HttpStatus.BAD_REQUEST);
   }
 }

@@ -2,6 +2,7 @@ package chinhtran.JWTServerApp.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 
 public abstract class AbstractException extends RuntimeException {
@@ -18,7 +19,7 @@ public abstract class AbstractException extends RuntimeException {
 
   public AbstractException(String code, List<String> args) {
     this.code = code;
-    this.args = new ArrayList<>(args);
+    this.args = Objects.isNull(args) ? null : new ArrayList<>(args);
   }
 
   /**
@@ -27,6 +28,6 @@ public abstract class AbstractException extends RuntimeException {
    * @return List<String>
    */
   public List<String> getArgs() {
-    return new ArrayList<>(this.args);
+    return Objects.isNull(args) ? null : new ArrayList<>(this.args);
   }
 }
