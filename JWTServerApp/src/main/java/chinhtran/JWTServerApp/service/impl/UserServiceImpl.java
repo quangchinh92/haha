@@ -1,5 +1,6 @@
 package chinhtran.JWTServerApp.service.impl;
 
+import chinhtran.JWTServerApp.cache.CacheBehavior;
 import chinhtran.JWTServerApp.cache.UserCache;
 import chinhtran.JWTServerApp.cache.models.UserCacheData;
 import chinhtran.JWTServerApp.cache.models.UserEvent;
@@ -75,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     // Put to redis
     UserEvent userEvent =
-        new UserEvent(UserConverter.convertEntityToCacheData(userEntity), "WRITE");
+        new UserEvent(UserConverter.convertEntityToCacheData(userEntity), CacheBehavior.WRITE);
     applicationEventPublisher.publishEvent(userEvent);
 
     // Create claims
@@ -93,10 +94,6 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public void update(Long id, UserPutReq model) {
 
-    if (!Objects.isNull(model.getLastUpdatedDate())) {
-      throw new BusinessException(Message.USER_ERR_002);
-    }
-
     UserGetRes userGetRes = getById(id);
 
     if (!model.getLastUpdatedDate().equals(userGetRes.getUpdatedDate())) {
@@ -113,18 +110,15 @@ public class UserServiceImpl implements UserService {
     cacheData.setEmail(model.getEmail());
     cacheData.setPhoneNumber(model.getPhoneNumber());
     cacheData.setUpdatedDate(now);
-    UserEvent userEvent = new UserEvent(cacheData, "WRITE");
+    UserEvent userEvent = new UserEvent(cacheData, CacheBehavior.WRITE);
     applicationEventPublisher.publishEvent(userEvent);
   }
 
   @Override
   @Transactional
   public void changePass(Long id, ChangePassReq req) {
-    if (req.getNewPassword().length() < 8 && req.getNewPassword().length() > 20) {
-      throw new BusinessException("PASSWORD");
-    }
     if (!req.getNewPassword().equals(req.getConfirmNewPassword())) {
-      throw new BusinessException("PASSWORD");
+      throw new BusinessException(Message.CHANGE_PASSWORD_001);
     }
 
     // Check userName is exist.
@@ -144,8 +138,7 @@ public class UserServiceImpl implements UserService {
       return UserConverter.convertCacheDataToRes(cacheData);
     }
 
-    UserEntity userEntity =
-        userRepository.findById(id).orElseThrow(() -> new BusinessException("1"));
+    UserEntity userEntity = userRepository.findById(id).get();
 
     return UserConverter.convertEntityToRes(userEntity);
   }

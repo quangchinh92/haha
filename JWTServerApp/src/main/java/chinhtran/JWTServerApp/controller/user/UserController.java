@@ -30,7 +30,7 @@ public class UserController {
   }
 
   @PutMapping
-  public ResponseEntity<Void> put(@RequestBody UserPutReq req) {
+  public ResponseEntity<Void> put(@RequestBody @Valid UserPutReq req) {
     MyAuthenticationToken myAuthenticationToken =
         (MyAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 

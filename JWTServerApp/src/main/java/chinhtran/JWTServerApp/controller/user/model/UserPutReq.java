@@ -1,21 +1,22 @@
 package chinhtran.JWTServerApp.controller.user.model;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Objects;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class UserPutReq {
-  private String name;
-  private String email;
-  private String phoneNumber;
-  private Date lastUpdatedDate;
+
+  @Getter @Setter private String name;
+  @Getter @Setter private String email;
+  @Getter @Setter private String phoneNumber;
+  @NotNull private Date lastUpdatedDate;
 
   public Date getLastUpdatedDate() {
-    return Objects.isNull(lastUpdatedDate) ? null : (Date) lastUpdatedDate.clone();
+    return (Date) lastUpdatedDate.clone();
   }
 
   public void setLastUpdatedDate(Date lastUpdatedDate) {
-    this.lastUpdatedDate = Objects.isNull(lastUpdatedDate) ? null : (Date) lastUpdatedDate.clone();
+    this.lastUpdatedDate = (Date) lastUpdatedDate.clone();
   }
 }

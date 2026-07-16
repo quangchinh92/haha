@@ -20,4 +20,7 @@ public class Message {
   public static final String USER_ERR_002 = "user-err-002";
   // role-err-001: RoleId {0} Is not exist
   public static final String ROLE_ERR_001 = "role-err-001";
+
+  // Password and confirm are match.
+  public static final String CHANGE_PASSWORD_001 = "change-password-001";
 }

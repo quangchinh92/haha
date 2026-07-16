@@ -16,7 +16,7 @@ public class UserListener implements ApplicationListener<UserEvent> {
   @Override
   @Async
   public void onApplicationEvent(UserEvent event) {
-    if ("WRITE".equals(event.getMessage())) {
+    if (CacheBehavior.WRITE.equals(event.getMessage())) {
       UserCacheData data = (UserCacheData) event.getSource();
 
       UserCacheData root = userCache.getById(data.getId());

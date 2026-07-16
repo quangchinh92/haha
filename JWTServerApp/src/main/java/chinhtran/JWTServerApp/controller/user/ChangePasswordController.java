@@ -3,6 +3,7 @@ package chinhtran.JWTServerApp.controller.user;
 import chinhtran.JWTServerApp.controller.BaseController;
 import chinhtran.JWTServerApp.controller.user.model.ChangePassReq;
 import chinhtran.JWTServerApp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ public class ChangePasswordController extends BaseController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> post(@RequestBody ChangePassReq req) {
+  public ResponseEntity<Void> post(@RequestBody @Valid ChangePassReq req) {
     userService.changePass(getAuthenticationToken().getUserId(), req);
     return ResponseEntity.noContent().build();
   }
