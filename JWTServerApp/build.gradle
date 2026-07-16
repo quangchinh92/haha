@@ -37,6 +37,12 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-api', version: '2.6.0'
+    implementation "org.springframework.boot:spring-boot-starter-log4j2"
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
 }
 
 ext['commons-lang3.version'] = '3.17.0'
