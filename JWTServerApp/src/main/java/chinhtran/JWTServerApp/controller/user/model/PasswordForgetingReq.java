@@ -1,14 +1,10 @@
 package chinhtran.JWTServerApp.controller.user.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class PasswordForgetingReq {
-  private String email;
+  @Getter @Setter @NotBlank @Email private String email;
 }

@@ -140,6 +140,11 @@ public class UserServiceImpl implements UserService {
 
     UserEntity userEntity = userRepository.findById(id).get();
 
+    // Put to redis
+    UserEvent userEvent =
+        new UserEvent(UserConverter.convertEntityToCacheData(userEntity), CacheBehavior.WRITE);
+    applicationEventPublisher.publishEvent(userEvent);
+
     return UserConverter.convertEntityToRes(userEntity);
   }
 }
