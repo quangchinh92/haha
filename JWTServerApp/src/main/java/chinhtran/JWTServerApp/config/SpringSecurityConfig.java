@@ -32,19 +32,7 @@ public class SpringSecurityConfig {
         .authorizeHttpRequests(
             (authorize) ->
                 authorize
-                    .requestMatchers(
-                        "/api/authentication",
-                        "/swagger/**",
-                        "/v3/**",
-                        "/context-path/swagger-ui.html",
-                        "/v3/api-docs",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/swagger-resources/**",
-                        "/swagger-resources",
-                        "/api-docs/**",
-                        "/swagger-ui-custom.html")
+                    .requestMatchers("/api/authentication")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/users")
                     .permitAll()
